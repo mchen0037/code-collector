@@ -1,0 +1,104 @@
+/* CONSOLE AND EDITOR STYLING */
+.console{
+    width: 100%;
+    background-color: black;
+    height: 300px !important;
+    color: white;
+    overflow-x: none;
+    overflow-y: scroll;
+}
+
+.editor{
+    width: 100% !important;
+    height: 440px !important;
+}
+
+.runPlay{
+    width: 100%;
+}
+
+.buttonRun{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.runPlay{
+    background-color: greenyellow !important;
+}
+
+/* RIGHT STYLING CHARACTER */
+.characterText{
+    height: 100%;
+    border-left: black solid 10px;
+    background-color: white;
+}
+
+.characterTalks{
+    padding-top: 250px !important;
+    width: 350px;
+    height: 600px;
+}
+
+.characterTalks:hover{
+    cursor: pointer;
+}
+
+/* Popup container - can be anything you want */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* The actual popup */
+  .popup .popuptext {
+    display: block;
+    width: 500px;
+    background-color: rgb(206, 194, 194);
+    color: black;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -250px;
+  }
+  
+  /* Popup arrow */
+  .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(206, 194, 194) transparent transparent transparent;
+  }
+
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s;
+  }
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+
+  #textPosition{
+      top: 230px;
+      left: 400px;
+  }

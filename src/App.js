@@ -1,26 +1,28 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+//IMPORT COMPONENTS
+import TextEditor from "./components/textEditor";
+import CharacterText from "./components/characterText";
+
+//IMPORT SEMANTIC UI
+import {Grid} from "semantic-ui-react";
+
+//IMPORT CSS
+import "./assets/css/textEditor.css";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+     <React.Fragment>
+       <Grid columns= "equal">
+        <Grid.Column width = {8}>
+          <TextEditor/>
+        </Grid.Column>
+        <Grid.Column width = {8}>
+          <CharacterText/>
+        </Grid.Column>
+      </Grid>
+     </React.Fragment>
     );
   }
 }
