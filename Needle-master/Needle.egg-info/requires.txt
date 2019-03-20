@@ -1,0 +1,4 @@
+flask-bootstrap
+flask-codemirror
+flask-wtf
+flask>=1.0.2

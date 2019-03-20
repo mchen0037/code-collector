@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Python Interpreter</title>
+  {{ codemirror.include_codemirror() }}
+  <link rel="stylesheet" href="static/bstrap/css/bootstrap.css" />
+  <link rel="shortcut icon" href=#>
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="static/bstrap/js/bootstrap.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    function Clear() { //maybe force a refresh?
+      cleared = editor_for_source_code.setValue("")
+      $("#output").html("")
+      location.reload()
+      return cleared
+    }
+    function importCheck(code) { //bypass for light
+      var found = (code.match(/import/g) || []).length //forbid import other than light 
+      if (found != 0) {
+        alert('Imports Not Allowed')
+        return true
+      }
+      else {
+        return false
+      }
+    }
+    function userInput(code) {
+      var found = (code.match(/raw_input()/g) || []).length
+      var total = ''
+      var i = 1
+      if (found == 0) {
+        return total
+      }
+      else {
+        var test = (code.match(/raw_input()/) || []).input.split(/['']/)
+        while (found != 0) {
+          var userInput = prompt(test[i])
+          total += userInput + '\n'
+          i = i + 2
+          found--
+        }
+      }
+      return total
+    }
+    function cleanCode(code) {
+      var removeRaw = code.replace(/raw_input(.*)/g, 'raw_input()')
+      var removeLight = removeRaw.replace(/(from light import *(.*))/g, '')
+      var clean = removeLight
+      console.log(clean)
+      var supportCode = ''
+      var pass = supportCode + '\n' + clean
+      return pass
+    }
+    function getCode() {
+      var code = editor_for_source_code.getValue() //grabs code from CodeMirror
+      console.log(code)
+      var input = userInput(code)
+      var blockRun = importCheck(code)
+      var pass = cleanCode(code)
+      console.log(pass)
+
+      $("#run").html("Running");
+      $.post("http://127.0.0.1:5000/run", { 'code': pass, 'input': input }, function (write) {
+        $("#output").html(write);
+        $("#run").html("Run");
+      });
+    }
+  </script>
+
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="display-4"></h1>
+    <textarea id="flask-codemirror-source_code" name="source_code"></textarea>
+    <script>
+      var editor_for_source_code = CodeMirror.fromTextArea(
+        document.getElementById('flask-codemirror-source_code'),
+        {
+          "theme": "3024-night",
+          "mode": "python",
+          "lineNumbers": "true"
+        }
+      );
+    </script>
+  </div>
+  <div class="container">
+    <div class="form-group">
+      <textarea id="output" class="form-control" rows="5" id="comment" name="text"></textarea>
+    </div>
+    <div class="col-md-12 text-center">
+      <button id="run" type="button" class="btn btn-success" onclick="getCode()">Run</button>
+      <button id="reset" type="button" class="btn btn-warning" onclick="Clear()">Reset</button>
+    </div>
+  </div>
+</body>
+
+</html>
