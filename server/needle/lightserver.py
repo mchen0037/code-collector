@@ -23,13 +23,15 @@ app = Flask(__name__)
 CORS(app)
 
 # This is for killing a process that we have spawned
+@app.route("/kill")
 def kill():
     global result
+    global output
     print "Starting kill"
     if result != None:
         print "Killing"
         os.killpg(os.getpgid(result.pid), SIGTERM)
-        result = None
+        output = "Process was terminated"
         return "Killed it..."
     else:
         return "Nothing to kill"
@@ -96,7 +98,7 @@ def getOutput():
     while result == None:
         time.sleep(0.1)
     # We will wait 5 seconds, checking at 0.1 second intervals
-    for i in range(50):
+    for i in range(1200):
         # The process has terminated, there should be output and/or an error
         if result.poll() != None:
             return output + error
@@ -116,4 +118,4 @@ def getOutput():
 
 
 if __name__ == '__main__':
-        app.run(debug =True)
+        app.run(host="0.0.0.0", port=5000)

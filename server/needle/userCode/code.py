@@ -1,2 +1,3 @@
 from light import *
-print "fre"
+red.on()
+wait(5)

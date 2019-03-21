@@ -27,11 +27,11 @@ class textEditor extends Component {
 
         }
         console.log("HERE ",code.input);
-        axios.post("http://localhost:5000/run", {code})
+        axios.post("http://10.0.1.9:5000/run", {code})
         .then(res =>{
             console.log(res.data)
             //UPDATES WHAT WILL BE DISPLAY OJN CONSOLE
-            axios.get("http://localhost:5000/output")
+            axios.get("http://10.0.1.9:5000/output")
             .then(res => {
                 const output = res.data;
                 console.log("OUTPUT: ", res.data)
