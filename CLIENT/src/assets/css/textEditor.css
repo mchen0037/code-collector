@@ -23,7 +23,12 @@
 }
 
 .runPlay{
-    background-color: greenyellow !important;
+  background-color: rgba(126, 209, 44, 0.6) !important;
+}
+
+.runPlay:hover{
+  background-color: greenyellow !important;
+
 }
 
 /* RIGHT STYLING CHARACTER */

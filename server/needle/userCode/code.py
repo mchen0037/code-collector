@@ -1,1 +1,2 @@
-print "COOL"
+from light import *
+print "fre"

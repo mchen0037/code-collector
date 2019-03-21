@@ -29,10 +29,12 @@ class textEditor extends Component {
         console.log("HERE ",code.input);
         axios.post("http://localhost:5000/run", {code})
         .then(res =>{
+            console.log(res.data)
             //UPDATES WHAT WILL BE DISPLAY OJN CONSOLE
             axios.get("http://localhost:5000/output")
             .then(res => {
                 const output = res.data;
+                console.log("OUTPUT: ", res.data)
                 this.setState({output});
             })
         })
@@ -51,10 +53,7 @@ class textEditor extends Component {
                     editorProps={{$blockScrolling: true}}
                   />
                   <div className = "buttonRun">
-                    <Button animated className = "runPlay" onClick = {() => this.handleRun()}>
-                        <Button.Content visible>
-                            <Icon name='pause' />
-                        </Button.Content>
+                    <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
                         <Button.Content hidden>
                             <Icon name='play' />
                         </Button.Content>

@@ -2,6 +2,7 @@
 from flask import Flask
 from flask import request
 import json
+# from light.py import Light
 from flask_cors import CORS
 
 # === This stuff is needed for handling the execution of user code ===
@@ -14,6 +15,7 @@ signal(SIGPIPE, SIG_DFL)
 result = None
 output = None
 error = None 
+noImports = None
 # ====================================================================
 
 
@@ -37,18 +39,18 @@ def spawn(code, userInput):
     global result
     global output
     global error
+
     f = open('userCode/code.py', 'w')
     f.write(code)
     f.close()
- 
+
     f = open('userCode/input.txt', 'w')
     f.write(userInput)
     f.close()
 
     result = Popen("python userCode/code.py < userCode/input.txt", stdout=PIPE,
-                   stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
+                stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
     output, error = result.communicate()
-    print "OUTPUT: ", output
 
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
@@ -57,6 +59,7 @@ def runcode():
     global output
     global error
     global result
+    global noImports
     output = None
     error = None
     result = None
@@ -66,10 +69,14 @@ def runcode():
         STORE = STORE["code"]
         code = STORE["code"]
         userInput = STORE["input"]
-        
+
+        if (code.find("import") != -1):
+            noImports = 1
         # Start up the process in a new thread
-        t = Thread(target=spawn, args=(code, userInput,))
-        t.start()
+        else:
+            code = "from light import *\n" + code
+            t = Thread(target=spawn, args=(code, userInput,))
+            t.start()
 
         return "RUNNING"
 
@@ -79,13 +86,15 @@ def getOutput():
     global output
     global error
     global result
+    global noImports
+    if (noImports == 1):
+        return "NO IMPORTS"
     temp = None
     errFlag = False
     # Make sure the process has started
     # Wait for it if it has not
     while result == None:
         time.sleep(0.1)
-    
     # We will wait 5 seconds, checking at 0.1 second intervals
     for i in range(50):
         # The process has terminated, there should be output and/or an error
