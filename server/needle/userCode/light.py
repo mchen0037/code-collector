@@ -20,9 +20,11 @@ class Light:
 
     def on(self):
         GPIO.output(self.pin, False)
+        print "AA: %s turning on" % (self.color)
 
     def off(self):
         GPIO.output(self.pin, True)
+        print "AA: % turning off" % (self.color)
 
     def beep(self):
         self.snd.play()
@@ -34,6 +36,7 @@ class Light:
 
 def wait(sec):
     time.sleep(sec)
+    print "AA: waiting %d seconds" % (sec)
 
 def random(start, finish):
     return randint(start, finish)
@@ -50,7 +53,7 @@ def setup():
 
 
 def cleanup():
-    print "Exiting program..."
+    #print "Exiting program..."
     GPIO.cleanup()
 
 GPIO.setwarnings(False)

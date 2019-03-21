@@ -13,7 +13,7 @@ class characterText extends Component {
             <React.Fragment>
                 <div className = "characterText">
                 <div className = "popup" id = "textPosition">
-                    <div className = "popuptext" id = "myPopup">HELLO THERE!!!</div>
+                    <div className = "popuptext" id = "myPopup">To turn the red light on for 5 seconds, type:<br/><br/><pre>red.on()<br/>wait(5)</pre><br/>and press the Play button</div>
                 </div>
                     <center><img alt = "" onClick = {()=> popOut()} onClick = {()=> sendText()} className = "characterTalks" src = {JIJI}/></center>
                 </div>
