@@ -1,8 +1,6 @@
 
 from flask import Flask
 from flask import request
-
-# NEEDED
 import json
 from flask_cors import CORS
 
