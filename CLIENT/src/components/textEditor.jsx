@@ -29,9 +29,12 @@ class textEditor extends Component {
         console.log("HERE ",code.input);
         axios.post("http://localhost:5000/run", {code})
         .then(res =>{
-            const output = res.data;
             //UPDATES WHAT WILL BE DISPLAY OJN CONSOLE
-            this.setState({output});
+            axios.get("http://localhost:5000/output")
+            .then(res => {
+                const output = res.data;
+                this.setState({output});
+            })
         })
     }
     render() { 

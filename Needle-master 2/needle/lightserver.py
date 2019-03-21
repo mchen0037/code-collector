@@ -50,6 +50,7 @@ def spawn(code, userInput):
     result = Popen("python userCode/code.py < userCode/input.txt", stdout=PIPE,
                    stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
     output, error = result.communicate()
+    print "OUTPUT: ", output
 
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
@@ -61,9 +62,8 @@ def runcode():
     output = None
     error = None
     result = None
-    print "OOKKAAAAY"
     if(request.method == "POST"):
-        print "OOKKAAAAY"
+
         STORE  = json.loads(request.data)
         STORE = STORE["code"]
         code = STORE["code"]
@@ -72,18 +72,8 @@ def runcode():
         # Start up the process in a new thread
         t = Thread(target=spawn, args=(code, userInput,))
         t.start()
-        f = open('userCode/code.py', 'w')
-        f.write(code)
-        f.close()
 
-        f = open('userCode/input.txt', 'w')
-        f.write(userInput)
-        f.close()
-
-        result = Popen("python userCode/code.py < userCode/input.txt", stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid) 
-        output = result.communicate()[0]
-
-        return output
+        return "RUNNING"
 
 
 @app.route("/output")
@@ -93,7 +83,6 @@ def getOutput():
     global result
     temp = None
     errFlag = False
-    
     # Make sure the process has started
     # Wait for it if it has not
     while result == None:
