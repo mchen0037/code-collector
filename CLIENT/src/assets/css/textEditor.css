@@ -86,6 +86,7 @@
     margin-left: -250px;
     padding:20px;
     font-size: 20px;
+   
   }
   
   /* Popup arrow */
@@ -120,4 +121,14 @@
   #textPosition{
      top: 250px;
      left: 50%;
+  }
+
+  /*REPEAT CONTENT*/
+  #repeatContent{
+    display: none;
+  }
+
+  .codeWritten{
+    font-weight: bold;
+    color: rgb(74, 153, 43);
   }

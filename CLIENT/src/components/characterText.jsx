@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 //IMPORT IMAGE
 import JIJI from "../assets/img/jiji.jpg";
 
+import {Button} from "semantic-ui-react";
+
 //IMPORT JS
 import {popOut} from "../assets/js/popOutText.js";
-import {sendText} from "../assets/js/textAnimation";
+import {sendText, repeatAgain} from "../assets/js/textAnimation";
 
 class characterText extends Component {
     state = {  }
@@ -13,9 +15,19 @@ class characterText extends Component {
             <React.Fragment>
                 <div className = "characterText">
                 <div className = "popup" id = "textPosition">
-                    <div className = "popuptext" id = "myPopup">HELLO THERE!!!</div>    <br/>
+                    <div className = "popuptext" id = "myPopup">HELLO THERE!!!</div><br/>
                 </div>
                     <center><img alt = "" onClick = {()=> popOut()} onClick = {()=> sendText()} className = "characterTalks" src = {JIJI}/></center>
+                    <div id = "repeatContent">
+                        <center>
+                            <br/>
+                            <h1>Would You Like Me To Repeat That Again?</h1>
+                            <div>
+                                <Button onClick = {()=>repeatAgain("YES")} content='YES' primary />
+                                <Button onClick = {()=>repeatAgain("NO")} content='NO' secondary />
+                            </div>
+                        </center>
+                    </div>
                 </div>
             </React.Fragment>
           );
