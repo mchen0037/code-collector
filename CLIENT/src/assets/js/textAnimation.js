@@ -85,6 +85,7 @@ export function repeatAgain(res){
 //HANDLE WHEN NEXT BUBBLE WILL BE FETCHED
 var startBubble = true;
 var message = "";
+var output = "";
 function startNewBubble(){
     let startIndex = storeBubbles[bubbleIndex].search("<message>") + 10;
     let endIndex = storeBubbles[bubbleIndex].search("</message>");
@@ -92,7 +93,11 @@ function startNewBubble(){
         message += storeBubbles[bubbleIndex][startIndex];
         startIndex +=1;
     }
-    console.log("WHAT THE ",message);
+    //OUTPUT HEEEERE
+    let startOutput = storeBubbles[bubbleIndex].search("<output>");
+    let endOutput = storeBubbles[bubbleIndex].search("</output>") - 8;
+    console.log(endOutput);
+    output = (storeBubbles[bubbleIndex].substr(startOutput + 8, (endOutput)));
 }
 
 //called everytime we click on cat
@@ -112,7 +117,6 @@ export function sendText(){
 //display words in animation format
 function display(){
     if(indexWord < message.length){
-        console.log("I SEE");
         let temp = indexWord;
         if((message[indexWord] === '<' && message[indexWord + 1] === 'c' 
         && message[indexWord + 2] === 'o') || startCode){
