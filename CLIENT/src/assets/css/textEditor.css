@@ -31,6 +31,18 @@
 
 }
 
+/* sides */
+/* .leftSide{
+  border-right: black solid 10px;
+  height: 100%;
+} */
+.ui.grid{
+  height: 100%;
+}
+#root{
+  height: 100%;
+}
+
 /* RIGHT STYLING CHARACTER */
 .characterText{
     height: 100%;
@@ -106,6 +118,6 @@
   }
 
   #textPosition{
-      top: 230px;
-      left: 400px;
+     top: 250px;
+     left: 50%;
   }

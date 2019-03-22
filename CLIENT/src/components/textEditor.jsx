@@ -42,27 +42,28 @@ class textEditor extends Component {
     render() { 
         return (
             <React.Fragment>
-                  <AceEditor
-                    className = "editor"
-                    fontSize = {18}
-                    value = {returnCode()}
-                    mode="python"
-                    theme="xcode"
-                    onChange={this.handleChange}
-                    name="UNIQUE_ID_OF_DIV"
-                    editorProps={{$blockScrolling: true}}
-                  />
-                  <div className = "buttonRun">
-                    <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
-                        <Button.Content hidden>
-                            <Icon name='play' />
-                        </Button.Content>
-                    </Button>
-                  </div>
-               
-                  <textarea className = "console" type ="text" name = "comment" 
-                 placeholder={this.state.output}/>
-                 
+                <div className = "leftSide">
+                    <AceEditor
+                        className = "editor"
+                        fontSize = {18}
+                        value = {returnCode()}
+                        mode="python"
+                        theme="xcode"
+                        onChange={this.handleChange}
+                        name="UNIQUE_ID_OF_DIV"
+                        editorProps={{$blockScrolling: true}}
+                    />
+                    <div className = "buttonRun">
+                        <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
+                            <Button.Content hidden>
+                                <Icon name='play' />
+                            </Button.Content>
+                        </Button>
+                    </div>
+                
+                    <div className = "console" type ="text" name = "comment" 
+                    placeholder={this.state.output}/>
+                </div>
             </React.Fragment>
           );
     }
