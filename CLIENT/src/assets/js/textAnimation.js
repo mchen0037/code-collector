@@ -25,20 +25,32 @@ AA: Whatever
 </output>
 </bubble>`
 
-
 //HERE WILL BE FUNCTION THAT WILL PARSE STRING IN THER CORRESPONDING SECTIONS
-//READ MESSAGE
-let startIndex = words.search("<message>") + 10;
-let endIndex = words.search("</message>");
-var message = "";
-while(startIndex < endIndex){
-    message += words[startIndex];
-    startIndex +=1;
+//READ MESSAGE FROM READ FILE TEXT
+
+// GET BUBBLE ELEMENTS
+var startScript = 0;
+var storeBubbles = [];
+let endBubble;
+let newBubbleSlice = "";
+let completeScript = 0
+while((completeScript) < words.length){
+    newBubbleSlice = words.slice(startScript);
+    startScript = newBubbleSlice.search("<bubble>");
+    endBubble = newBubbleSlice.search("</bubble>");
+    storeBubbles.push(newBubbleSlice.substring((startScript + 8), (endBubble - 1)));
+    startScript = endBubble + 9;
+    completeScript += startScript;
+    console.log(startScript);
 }
+    // newBubbleSlice = words.slice(startScript);
+    // console.log("NEW BUBBLE: ", newBubbleSlice);
+console.log("BUBBLE ARRAY: ", storeBubbles);
+
 console.log(message);
 
-var index = 0;
-var indexWord = 0;
+var bubbleIndex = 0; //used to move between bubbles
+var indexWord = 0; // used to keep track of message and code element for each bubble
 var textAnimation;
 var textFinished = false;
 //CODE TAG HELPERS
@@ -51,22 +63,46 @@ var text = document.getElementsByClassName("popuptext");
 
 //function used to repeat content again
 export function repeatAgain(res){
-    if(res == "YES"){
+    if(res === "YES"){
         indexWord = 0;
         textFinished = false;
         text[0].style.height = "none";
         text[0].innerHTML = "";
         document.getElementById("repeatContent").style.display = "none";
     }
-    else if(res == "NO"){
+    else if(res === "NO"){
         text[0].innerHTML = "OKAY, GOOD LUCK!!!";
         document.getElementById("repeatContent").style.display = "none";
+        if((bubbleIndex + 1) < storeBubbles.length)
+            bubbleIndex += 1;
+        textFinished = false; //TEMPORARY DEMO PURPOSE
+        startBubble = true;
+        text[0].innerHTML = "";
+        console.log(message);
     }
+}
+
+//HANDLE WHEN NEXT BUBBLE WILL BE FETCHED
+var startBubble = true;
+var message = "";
+function startNewBubble(){
+    let startIndex = storeBubbles[bubbleIndex].search("<message>") + 10;
+    let endIndex = storeBubbles[bubbleIndex].search("</message>");
+    while(startIndex < endIndex){
+        message += storeBubbles[bubbleIndex][startIndex];
+        startIndex +=1;
+    }
+    console.log("WHAT THE ",message);
 }
 
 //called everytime we click on cat
 export function sendText(){
+    if(startBubble){
+        startNewBubble();
+        startBubble = false;
+    }
     if(!textFinished === true){
+        console.log("FETCHED??? ",message)
         text[0].style.height = "none";
         text[0].innerHTML = "";
         textAnimation = setInterval(display, 5);
@@ -76,20 +112,22 @@ export function sendText(){
 //display words in animation format
 function display(){
     if(indexWord < message.length){
+        console.log("I SEE");
         let temp = indexWord;
-        if((message[indexWord] == '<' && message[indexWord + 1] == 'c' 
-        && message[indexWord + 2] == 'o') || startCode){
+        if((message[indexWord] === '<' && message[indexWord + 1] === 'c' 
+        && message[indexWord + 2] === 'o') || startCode){
             startCode = true;
             if(createLineCode){
                 text[0].innerHTML += "<br/>";
                 createLineCode = false;
+                //cut message to get next coding tag
                 newCode = message.slice(indexWord);
                 endCode = newCode.search("</code>") + indexWord;
                 indexWord += 5;
             }
             else{
                 let ready = false;
-                if(indexWord == (endCode - 1)){
+                if(indexWord === (endCode - 1)){
                     console.log(indexWord, " > ", endCode);
                     indexWord += 8;
                     text[0].innerHTML += "<br/>";
@@ -114,10 +152,10 @@ function display(){
             indexWord +=1;
             console.log(text[0].offsetHeight);
         }
-        if(text[0].offsetHeight > 200 && message[temp] == ' '){
+        if(text[0].offsetHeight > 200 && message[temp] === ' '){
             clearInterval(textAnimation);
         }
-        if(indexWord == message.length){
+        if(indexWord === message.length){
             textFinished = true;
             document.getElementById("repeatContent").style.display = "block";
         }

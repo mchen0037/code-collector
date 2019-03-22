@@ -5,7 +5,6 @@ import JIJI from "../assets/img/jiji.jpg";
 import {Button} from "semantic-ui-react";
 
 //IMPORT JS
-import {popOut} from "../assets/js/popOutText.js";
 import {sendText, repeatAgain} from "../assets/js/textAnimation";
 
 class characterText extends Component {
@@ -17,7 +16,7 @@ class characterText extends Component {
                 <div className = "popup" id = "textPosition">
                     <div className = "popuptext" id = "myPopup">HELLO THERE!!!</div><br/>
                 </div>
-                    <center><img alt = "" onClick = {()=> popOut()} onClick = {()=> sendText()} className = "characterTalks" src = {JIJI}/></center>
+                    <center><img alt = "" onClick = {()=> {sendText()}} className = "characterTalks" src = {JIJI}/></center>
                     <div id = "repeatContent">
                         <center>
                             <br/>

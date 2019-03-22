@@ -13,9 +13,6 @@
     height: 440px !important;
 }
 
-.runPlay{
-    width: 100%;
-}
 
 .buttonRun{
     padding-top: 20px;
@@ -24,10 +21,22 @@
 
 .runPlay{
   background-color: rgba(126, 209, 44, 0.6) !important;
+  width: 100%;
 }
 
 .runPlay:hover{
   background-color: greenyellow !important;
+
+}
+
+
+.runPause{
+  background-color: rgba(209, 50, 44, 0.6) !important;
+  width: 100%;
+}
+
+.runPause:hover{
+  background-color: rgb(238, 38, 38) !important;
 
 }
 
@@ -130,5 +139,5 @@
 
   .codeWritten{
     font-weight: bold;
-    color: rgb(74, 153, 43);
+    color: rgb(39, 138, 151);
   }

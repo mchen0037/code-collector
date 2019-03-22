@@ -6,7 +6,7 @@ import 'brace/mode/python';
 import 'brace/theme/xcode';
 
 //IMPORT SEMANTIC UI
-import {Button, Icon} from "semantic-ui-react";
+import {Button, Icon, Grid} from "semantic-ui-react";
 
 //IMPORT JS
 import {updateValue, returnCode, userInput} from "../assets/js/popOutText";
@@ -39,6 +39,13 @@ class textEditor extends Component {
             })
         })
     }
+
+    handleKill = () =>{
+        axios.get("http://10.0.1.9:5000/kill")
+        .then(res=>{
+            console.log("KILLED PROGRAM");
+        })
+    }
     render() { 
         return (
             <React.Fragment>
@@ -54,11 +61,22 @@ class textEditor extends Component {
                         editorProps={{$blockScrolling: true}}
                     />
                     <div className = "buttonRun">
-                        <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
-                            <Button.Content hidden>
-                                <Icon name='play' />
-                            </Button.Content>
-                        </Button>
+                        <Grid columns= "equal">
+                            <Grid.Column width = {8}>
+                                <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
+                                    <Button.Content hidden>
+                                        <Icon name='play' />
+                                    </Button.Content>
+                                </Button>
+                            </Grid.Column>
+                            <Grid.Column width = {8}>
+                                <Button id = "playButton" className = "runPause" onClick = {() => this.handleKill()}>
+                                    <Button.Content hidden>
+                                        <Icon name='pause' />
+                                    </Button.Content>
+                                </Button>
+                            </Grid.Column>
+                        </Grid>
                     </div>
                 
                     <div className = "console" type ="text" name = "comment" 
