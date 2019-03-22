@@ -1,0 +1,26 @@
+<bubble>
+<message>
+Let's turn on the red light for 1 second. We can refer to each of the lights by name (red, yellow, green), and we can instruct each of them to turn on or off. We do this by adding the command to the name, like this:
+
+<code>red.on()</code>
+
+After this, we need to tell the computer to wait for a certain period of time, so that the light stays on for that period. To do this, just type:
+
+<code>wait(5)</code>
+
+Now, turn on the red light for 5 seconds.
+</message>
+<output>
+AA: red turning on
+AA: waiting 5 seconds
+</output>
+</bubble>
+
+<bubble>
+<message>
+Now it is the next thing...
+</message>
+<output>
+AA: Whatever
+</output>
+</bubble>
