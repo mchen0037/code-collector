@@ -93,11 +93,14 @@ function startNewBubble(){
         message += storeBubbles[bubbleIndex][startIndex];
         startIndex +=1;
     }
-    //OUTPUT HEEEERE
-    let startOutput = storeBubbles[bubbleIndex].search("<output>");
-    let endOutput = storeBubbles[bubbleIndex].search("</output>") - 8;
-    console.log(endOutput);
-    output = (storeBubbles[bubbleIndex].substr(startOutput + 8, (endOutput)));
+    //OUTPUT ELEMENT 
+    let startOutput = storeBubbles[bubbleIndex].search("<output>") + 8;
+    let endOutput = storeBubbles[bubbleIndex].search("</output>");
+    while(startOutput < endOutput){
+        output += storeBubbles[bubbleIndex][startOutput];
+        startOutput +=1;
+    }
+    console.log("OUTPUT ", output);
 }
 
 //called everytime we click on cat
