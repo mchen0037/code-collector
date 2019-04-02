@@ -4,7 +4,7 @@
     color: black;
     font-size: large;
     /* background-color: black; */
-    height: 200px !important;
+    height: 250px !important;
     overflow-x: none;
     overflow-y: scroll;
     border-style: solid;
@@ -14,7 +14,7 @@
 
 .editor{
     width: 100% !important;
-    height: 440px !important;
+    height: 550px !important;
 }
 
 
