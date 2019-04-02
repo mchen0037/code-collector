@@ -1,16 +1,20 @@
 /* CONSOLE AND EDITOR STYLING */
 .console{
     width: 100%;
-    background-color: black;
-    height: 300px !important;
-    color: white;
+    color: black;
+    font-size: large;
+    /* background-color: black; */
+    height: 250px !important;
     overflow-x: none;
     overflow-y: scroll;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
 }
 
 .editor{
     width: 100% !important;
-    height: 440px !important;
+    height: 550px !important;
 }
 
 
@@ -79,7 +83,7 @@
     -ms-user-select: none;
     user-select: none;
   }
-  
+
   /* The actual popup */
   .popup .popuptext {
     display: block;
@@ -95,9 +99,9 @@
     margin-left: -250px;
     padding:20px;
     font-size: 20px;
-   
+
   }
-  
+
   /* Popup arrow */
   .popup .popuptext::after {
     content: "";
@@ -115,13 +119,13 @@
     -webkit-animation: fadeIn 0.5s;
     animation: fadeIn 0.5s;
   }
-  
+
   /* Add animation (fade in the popup) */
   @-webkit-keyframes fadeIn {
-    from {opacity: 0;} 
+    from {opacity: 0;}
     to {opacity: 1;}
   }
-  
+
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
