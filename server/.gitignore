@@ -9,3 +9,5 @@ userCode/input\.txt
 .vscode/
 
 \.DS_Store
+
+env
