@@ -13,6 +13,20 @@ import {updateValue, returnCode, userInput} from "../assets/js/popOutText";
 
 const _SERVER = "http://0.0.0.0:5000";
 
+// https://stackoverflow.com/questions/4456336/finding-variable-type-in-javascript
+var isArray = function (obj) {
+    switch (typeof(obj)) {
+        case 'object':
+            if (obj instanceof Array)
+                return true;
+            if (obj instanceof String)
+                return false;
+            return false;
+        default:
+            return false;
+    }
+};
+
 class textEditor extends Component {
     state = {
         output: "",
@@ -92,7 +106,10 @@ class textEditor extends Component {
                       </Grid>
                   </div>
                   <div className="console" type="text" name="comment">
-                    <pre>{this.state.output}</pre>
+                    {isArray(this.state.output) ?
+                      <pre>{JSON.stringify(this.state.output)}</pre> :
+                      <pre>{this.state.output}</pre>
+                    }
                   </div>
               </div>
           </React.Fragment>
