@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 //IMPORT COMPONENTS
 import TextEditor from "./components/textEditor";
-import CharacterText from "./components/characterText";
 
 //IMPORT SEMANTIC UI
 import {Grid} from "semantic-ui-react";
@@ -19,7 +18,8 @@ class App extends Component {
           <TextEditor/>
         </Grid.Column>
         <Grid.Column width = {8}>
-          <CharacterText/>
+          {/* <CharacterText/> add a block of text here describing the
+            RC cola problem isntead.*/}
         </Grid.Column>
       </Grid>
      </React.Fragment>

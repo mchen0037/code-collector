@@ -11,11 +11,13 @@ import {Button, Icon, Grid} from "semantic-ui-react";
 //IMPORT JS
 import {updateValue, returnCode, userInput} from "../assets/js/popOutText";
 
+const _SERVER = "http://0.0.0.0:5000";
+
 class textEditor extends Component {
     state = {
         output: ""
     }
-    
+
     handleChange = (code) =>{
         updateValue(code);
     }
@@ -26,27 +28,27 @@ class textEditor extends Component {
             input: userInput(returnCode())
 
         }
-        console.log("HERE ",code.input);
-        axios.post("http://10.0.1.9:5000/run", {code})
+        // console.log(code.input);
+        axios.post(_SERVER + "/run", {code})
         .then(res =>{
-            console.log(res.data)
+            // console.log(res.data)
             //UPDATES WHAT WILL BE DISPLAY OJN CONSOLE
-            axios.get("http://10.0.1.9:5000/output")
+            axios.get(_SERVER + "/output")
             .then(res => {
                 const output = res.data;
-                console.log("OUTPUT: ", res.data)
+                console.log(res.data)
                 this.setState({output});
             })
         })
     }
 
     handleKill = () =>{
-        axios.get("http://10.0.1.9:5000/kill")
-        .then(res=>{
-            console.log("KILLED PROGRAM");
+        axios.get(_SERVER + "/kill")
+        .then(res => {
+            console.log(res.data);
         })
     }
-    render() { 
+    render() {
         return (
             <React.Fragment>
                 <div className = "leftSide">
@@ -78,13 +80,13 @@ class textEditor extends Component {
                             </Grid.Column>
                         </Grid>
                     </div>
-                
-                    <div className = "console" type ="text" name = "comment" 
+
+                    <div className = "console" type ="text" name = "comment"
                     placeholder={this.state.output}/>
                 </div>
             </React.Fragment>
           );
     }
 }
- 
+
 export default textEditor;

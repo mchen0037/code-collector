@@ -11,7 +11,7 @@ export function popOut(){
 var code1 = "";
 export function updateValue(code){
     code1 = code;
-    console.log(code1);
+    // console.log(code1);
 }
 
 export function returnCode(){

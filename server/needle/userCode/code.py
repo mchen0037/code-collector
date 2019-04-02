@@ -1,3 +1,2 @@
-from light import *
-red.on()
-wait(5)
+while True:
+    x = 1
