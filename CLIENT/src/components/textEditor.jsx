@@ -15,14 +15,16 @@ const _SERVER = "http://0.0.0.0:5000";
 
 class textEditor extends Component {
     state = {
-        output: ""
+        output: "",
+        running: false
     }
 
     handleChange = (code) =>{
         updateValue(code);
     }
     //will handle submission of code written
-    handleRun = () =>{
+    handleRun = () => {
+        this.setState({running: true})
         const code = {
             code: returnCode(),
             input: userInput(returnCode())
@@ -37,9 +39,10 @@ class textEditor extends Component {
             .then(res => {
                 const output = res.data;
                 console.log(res.data)
-                this.setState({output});
+                this.setState({output: output, running: false});
             })
         })
+
     }
 
     handleKill = () =>{
@@ -49,44 +52,52 @@ class textEditor extends Component {
         })
     }
     render() {
-        return (
-            <React.Fragment>
-                <div className = "leftSide">
-                    <AceEditor
-                        className = "editor"
-                        fontSize = {18}
-                        value = {returnCode()}
-                        mode="python"
-                        theme="xcode"
-                        onChange={this.handleChange}
-                        name="UNIQUE_ID_OF_DIV"
-                        editorProps={{$blockScrolling: true}}
-                    />
-                    <div className = "buttonRun">
-                        <Grid columns= "equal">
-                            <Grid.Column width = {8}>
-                                <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
-                                    <Button.Content hidden>
-                                        <Icon name='play' />
-                                    </Button.Content>
-                                </Button>
-                            </Grid.Column>
-                            <Grid.Column width = {8}>
-                                <Button id = "playButton" className = "runPause" onClick = {() => this.handleKill()}>
-                                    <Button.Content hidden>
-                                        <Icon name='pause' />
-                                    </Button.Content>
-                                </Button>
-                            </Grid.Column>
-                        </Grid>
-                    </div>
+      return (
+          <React.Fragment>
+              <div className = "leftSide">
+                  <AceEditor
+                      className = "editor"
+                      fontSize = {18}
+                      value = {returnCode()}
+                      mode="python"
+                      theme="xcode"
+                      onChange={this.handleChange}
+                      name="UNIQUE_ID_OF_DIV"
+                      editorProps={{$blockScrolling: true}}
+                  />
+                  <div className = "buttonRun">
+                      <Grid columns= "equal">
+                          <Grid.Column width = {8}>
+                            {!this.state.running ?
+                              <Button id = "playButton" className = "runPlay" onClick = {() => this.handleRun()}>
+                                <Button.Content hidden>
+                                    <Icon name='play' />
+                                </Button.Content>
+                              </Button>
+                              :
+                              <Button id="playButton" className="runPlay" loading>
+                                <Button.Content hidden>
+                                  <Icon name='play'/>
+                                </Button.Content>
+                              </Button>
+                            }
+                          </Grid.Column>
+                          <Grid.Column width = {8}>
+                              <Button id = "playButton" className = "runPause" onClick = {() => this.handleKill()}>
+                                  <Button.Content hidden>
+                                      <Icon name='pause' />
+                                  </Button.Content>
+                              </Button>
+                          </Grid.Column>
+                      </Grid>
+                  </div>
 
-                    <div className = "console" type ="text" name = "comment"
-                    placeholder={this.state.output}/>
-                </div>
-            </React.Fragment>
-          );
-    }
+                  <div className = "console" type ="text" name = "comment"
+                  placeholder={this.state.output}/>
+              </div>
+          </React.Fragment>
+        );
+  }
 }
 
 export default textEditor;
