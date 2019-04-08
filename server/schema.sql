@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS Groups;
 DROP TABLE IF EXISTS Code_Iterations;
 DROP TABLE IF EXISTS Compilations;
+DROP TABLE IF EXISTS Processes;
 
 CREATE TABLE Groups (
   id SERIAL,
@@ -20,6 +21,5 @@ CREATE TABLE Compilations (
   code TEXT,
   output TEXT,
   error TEXT,
-  time TIMESTAMP,
-  ticket TEXT
+  time TIMESTAMP
 );

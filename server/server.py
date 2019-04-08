@@ -15,9 +15,9 @@ import psycopg2
 import string
 import random
 signal(SIGPIPE, SIG_DFL)
-result = None
-output = None
-error = None
+processes = {}
+output = {}
+error = {}
 # ====================================================================
 
 
@@ -50,13 +50,18 @@ conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=
 # This is for killing a process that we have spawned
 @app.route("/kill")
 def kill():
-    global result
+    global processes
     global output
+    global error
+    ticket = request.args.get('ticket')
+
+    program = processes[ticket]
+
     print("Starting kill")
-    if result != None:
+    if program != None:
         print("Killing")
         try:
-            os.killpg(os.getpgid(result.pid), SIGTERM)
+            os.killpg(os.getpgid(process.pid), SIGTERM)
             return "Process was killed."
         except:
             return 'Nothing to kill!'
@@ -70,11 +75,9 @@ def ticketGen(size=20, chars=string.ascii_uppercase + string.digits):
 
 # This is to spawn a process
 def spawn(code, userInput, group, ticket):
-    global result
+    global processes
     global output
     global error
-
-
     f = open('userCode/' + str(group) + '.py', 'w+')
     f.write(code)
     f.close()
@@ -83,39 +86,18 @@ def spawn(code, userInput, group, ticket):
     f.write(userInput)
     f.close()
 
-    result = Popen('python userCode/' + str(group) +
+
+    tmp = Popen('python userCode/' + str(group) +
                 '.py < userCode/' + str(group) + 'input.txt', stdout=PIPE,
                 stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
-    output, error = result.communicate()
 
-    postgres_out = output.decode('utf-8')
-    postgres_error = error.decode('utf-8')
+    processes[ticket] = tmp
+    output[ticket], error[ticket] = tmp.communicate()
 
-    postgres_code = str(code).replace("'", "''") # to escape ' in postgres, use ''
-    postgres_out = str(postgres_out).replace("'", "''")
-    postgres_error = str(postgres_error).replace("'", "''")
-    cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO Compilations VALUES(
-            DEFAULT, """ + str(group) + """,' """
-             + str(postgres_code) + """', '""" + str(postgres_out)
-             + """', '""" + str(postgres_error)+ """', now(), """
-             + """'""" + str(ticket) + """'
-        )
-    """)
-    conn.commit()
 
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
 def runcode():
-    # Reset all the global variables every time the user submits code
-    global output
-    global error
-    global result
-    # global noImports
-    output = None
-    error = None
-    result = None
     if(request.method == "POST"):
 
         STORE  = json.loads(request.data)
@@ -143,41 +125,37 @@ def runcode():
 
 @app.route("/output")
 def getOutput():
-    # global output
-    # global error
-    # global result
-    ticket = request.args.get('ticket')
+    global processes
+    global output
+    global error
 
-    temp = None
-    errFlag = False
+    ticket = request.args.get('ticket')
+    program = processes[ticket]
+
     # Make sure the process has started
     # Wait for it if it has not
-    while result == None:
+    while program == None:
         time.sleep(0.1)
     # We will wait 5 seconds, checking at 0.1 second intervals
     for i in range(1200):
         # The process has terminated, there should be output and/or an error
-        if result.poll() != None:
-            cur = conn.cursor()
-            cur.execute("""
-                SELECT output, error FROM Compilations
-                WHERE ticket='""" + ticket + """'
-            """)
-            output, error = cur.fetchone()
-            output = bytes(output, 'utf-8')
-            error = bytes(error, 'utf-8')
-            print(output)
-            return output + error
-            # return output + error
+        if program.poll() != None:
+            if ticket in processes:
+                out = output[ticket]
+                err = error[ticket]
+                del processes[ticket]
+                del output[ticket]
+                del error[ticket]
+            return out + err
         time.sleep(0.1)
 
     # We have waited 5 seconds now, check if the process is still alive
-    proc = result.poll()
+    proc = program.poll()
 
     # If proc is None, it means it is still alive
     # If the process has completed, proc will have some integer value, like 0
-    if proc == None:
-        kill()
+    if program == None:
+        kill(program)
         return "Taking too long..."
 
     return "This line should never be executed..."
@@ -202,11 +180,11 @@ def login():
         WHERE students[1] = '""" + student_1 + """'
         AND students[2] = '""" + student_2 + """'
     """)
-    result = cur.fetchone()
-    print(result[0])
+    res = cur.fetchone()
+    print(res[0])
 
     # return the id of the group
-    return str(result[0])
+    return str(res[0])
 
 @app.route("/upload", methods=['POST'])
 def upload():

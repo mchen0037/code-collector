@@ -36,7 +36,8 @@ class textEditor extends Component {
 
   state = {
     output: "",
-    running: false
+    running: false,
+    ticket: ""
   }
 
   handleChange = (code) =>{
@@ -53,11 +54,11 @@ class textEditor extends Component {
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
     .then(res =>{
-        let ticket = res.data // returns ticket value
+        this.setState({ticket: res.data})
         // UPDATES WHAT WILL BE DISPLAY ON CONSOLE
         axios.get(_SERVER + "/output", {
           params: {
-            ticket: ticket
+            ticket: this.state.ticket
           }
         })
         .then(res => {
@@ -72,7 +73,11 @@ class textEditor extends Component {
   }
 
   handleKill = () =>{
-      axios.get(_SERVER + "/kill")
+      axios.get(_SERVER + "/kill", {
+        params: {
+          ticket: this.state.ticket
+        }
+      })
       .then(res => {
           console.log(res.data);
       })
