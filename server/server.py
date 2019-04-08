@@ -123,7 +123,13 @@ def getOutput():
 
     return "This line should never be executed..."
 
-
+@app.route("/login", methods=['POST'])
+def login():
+    STORE  = json.loads(request.data)
+    student_1 = STORE["st_1"]
+    student_2 = STORE["st_2"]
+    
+    return "hi"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
