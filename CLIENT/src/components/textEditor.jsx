@@ -11,8 +11,8 @@ import {Button, Icon, Grid} from "semantic-ui-react";
 //IMPORT JS
 import {updateValue, returnCode, userInput, uploadCode} from "../assets/js/popOutText";
 
-const _SERVER = "http://0.0.0.0:5000";
-// const _SERVER = "https://rc-cola-backend.herokuapp.com"
+// const _SERVER = "http://0.0.0.0:5000";
+const _SERVER = "https://rc-cola-backend.herokuapp.com"
 
 // https://stackoverflow.com/questions/4456336/finding-variable-type-in-javascript
 var isArray = function (obj) {

@@ -12,8 +12,8 @@ import axios from "axios";
 //IMPORT CSS
 import "./assets/css/textEditor.css";
 
-const _SERVER = "http://0.0.0.0:5000";
-// const _SERVER = "https://rc-cola-backend.herokuapp.com"
+// const _SERVER = "http://0.0.0.0:5000";
+const _SERVER = "https://rc-cola-backend.herokuapp.com"
 
 class App extends Component {
   constructor() {

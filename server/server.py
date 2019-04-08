@@ -29,11 +29,11 @@ USER = os.environ['USER']
 DATABASE = os.environ['DATABASE']
 PASSWORD = os.environ['PASSWORD']
 
-# for local DB
-DBHOSTNAME = 'localhost'
-USER = 'postgres'
-DATABASE = 'testdb'
-PASSWORD = os.environ['ramen']
+# # for local DB
+# DBHOSTNAME = 'localhost'
+# USER = 'postgres'
+# DATABASE = 'testdb'
+# PASSWORD = os.environ['ramen']
 
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
 
@@ -84,7 +84,6 @@ def spawn(code, userInput, group, ticket):
     processes[ticket] = tmp
     output[ticket], error[ticket] = tmp.communicate()
 
-
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
 def runcode():
@@ -110,7 +109,6 @@ def runcode():
         t.start()
 
         return ticket
-
 
 @app.route("/output")
 def getOutput():
