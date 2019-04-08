@@ -1,2 +1,1 @@
-print('hi')
-0/0
+print('hello')

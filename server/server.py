@@ -12,6 +12,8 @@ from signal import signal, SIGPIPE, SIG_DFL, SIGTERM
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 import psycopg2
+import string
+import random
 signal(SIGPIPE, SIG_DFL)
 result = None
 output = None
@@ -61,8 +63,13 @@ def kill():
     else:
         return "Nothing to kill!"
 
+# generate a random receipt like ticket for the output to query for this
+# in the database, rather than relying on global variables.
+def ticketGen(size=20, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 # This is to spawn a process
-def spawn(code, userInput, group):
+def spawn(code, userInput, group, ticket):
     global result
     global output
     global error
@@ -81,15 +88,19 @@ def spawn(code, userInput, group):
                 stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
     output, error = result.communicate()
 
+    postgres_out = output.decode('utf-8')
+    postgres_error = error.decode('utf-8')
+
     postgres_code = str(code).replace("'", "''") # to escape ' in postgres, use ''
-    postgres_out = str(output).replace("'", "''")
-    postgres_error = str(error).replace("'", "''")
+    postgres_out = str(postgres_out).replace("'", "''")
+    postgres_error = str(postgres_error).replace("'", "''")
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO Compilations VALUES(
             DEFAULT, """ + str(group) + """,' """
-             + str(postgres_code) + """', ' + """ + str(postgres_out)
-             + """', '""" + str(postgres_error)+ """', now()
+             + str(postgres_code) + """', '""" + str(postgres_out)
+             + """', '""" + str(postgres_error)+ """', now(), """
+             + """'""" + str(ticket) + """'
         )
     """)
     conn.commit()
@@ -113,20 +124,30 @@ def runcode():
         group = STORE["group"]
         userInput = STORE["input"]
 
-        t = Thread(target=spawn, args=(code, userInput, group))
+        cur = conn.cursor()
+        # probability is low but ensure that no other copilations have the same ticket value
+        while (True):
+            ticket = ticketGen()
+            cur.execute("""
+                SELECT ticket FROM Compilations WHERE ticket='""" + ticket + """'
+            """)
+            res = cur.fetchall()
+            if not res: #check for empty list
+                break
+            print("Ticket already exists! Generating a new one...")
+        t = Thread(target=spawn, args=(code, userInput, group, ticket))
         t.start()
 
-        return "RUNNING"
+        return ticket
 
 
 @app.route("/output")
 def getOutput():
-    global output
-    global error
-    global result
-    # global noImports
-    # if (noImports == 1):
-    #     return "NO IMPORTS"
+    # global output
+    # global error
+    # global result
+    ticket = request.args.get('ticket')
+
     temp = None
     errFlag = False
     # Make sure the process has started
@@ -137,7 +158,17 @@ def getOutput():
     for i in range(1200):
         # The process has terminated, there should be output and/or an error
         if result.poll() != None:
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT output, error FROM Compilations
+                WHERE ticket='""" + ticket + """'
+            """)
+            output, error = cur.fetchone()
+            output = bytes(output, 'utf-8')
+            error = bytes(error, 'utf-8')
+            print(output)
             return output + error
+            # return output + error
         time.sleep(0.1)
 
     # We have waited 5 seconds now, check if the process is still alive
@@ -188,7 +219,7 @@ def upload():
     cur.execute("""
         INSERT INTO Code_Iterations VALUES (
             DEFAULT, """ + str(group_id) + """
-            ,' + """ + str(code) + """', now()
+            ,'""" + str(code) + """', now()
         )
     """)
     conn.commit()

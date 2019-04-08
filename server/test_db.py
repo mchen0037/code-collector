@@ -8,7 +8,7 @@ DATABASE = 'testdb'
 PASSWORD = os.environ['ramen']
 
 code = "print('hello')"
-code = code.replace("'", "''")
+code.replace("'", "\\\'")
 
 
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)

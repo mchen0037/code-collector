@@ -53,9 +53,13 @@ class textEditor extends Component {
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
     .then(res =>{
-        // console.log(res.data)
+        let ticket = res.data // returns ticket value
         // UPDATES WHAT WILL BE DISPLAY ON CONSOLE
-        axios.get(_SERVER + "/output")
+        axios.get(_SERVER + "/output", {
+          params: {
+            ticket: ticket
+          }
+        })
         .then(res => {
             const output = res.data;
             // console.log(res.data)

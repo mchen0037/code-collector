@@ -20,5 +20,6 @@ CREATE TABLE Compilations (
   code TEXT,
   output TEXT,
   error TEXT,
-  time TIMESTAMP
+  time TIMESTAMP,
+  ticket TEXT
 );
