@@ -1,13 +1,13 @@
 {
   "main.css": "/code-collector/static/css/main.f6c766ed.chunk.css",
-  "main.js": "/code-collector/static/js/main.4eb3cf78.chunk.js",
-  "main.js.map": "/code-collector/static/js/main.4eb3cf78.chunk.js.map",
+  "main.js": "/code-collector/static/js/main.aa2f5e07.chunk.js",
+  "main.js.map": "/code-collector/static/js/main.aa2f5e07.chunk.js.map",
   "runtime~main.js": "/code-collector/static/js/runtime~main.b34388e9.js",
   "runtime~main.js.map": "/code-collector/static/js/runtime~main.b34388e9.js.map",
-  "static/js/2.f9e78e0d.chunk.js": "/code-collector/static/js/2.f9e78e0d.chunk.js",
-  "static/js/2.f9e78e0d.chunk.js.map": "/code-collector/static/js/2.f9e78e0d.chunk.js.map",
+  "static/js/2.ffa78f6e.chunk.js": "/code-collector/static/js/2.ffa78f6e.chunk.js",
+  "static/js/2.ffa78f6e.chunk.js.map": "/code-collector/static/js/2.ffa78f6e.chunk.js.map",
   "index.html": "/code-collector/index.html",
-  "precache-manifest.7cf4a9477ebd10a21b024eeefec84103.js": "/code-collector/precache-manifest.7cf4a9477ebd10a21b024eeefec84103.js",
+  "precache-manifest.4358728888a406b59f4be79f8995422c.js": "/code-collector/precache-manifest.4358728888a406b59f4be79f8995422c.js",
   "service-worker.js": "/code-collector/service-worker.js",
   "static/css/main.f6c766ed.chunk.css.map": "/code-collector/static/css/main.f6c766ed.chunk.css.map"
 }
