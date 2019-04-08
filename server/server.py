@@ -62,22 +62,37 @@ def kill():
         return "Nothing to kill!"
 
 # This is to spawn a process
-def spawn(code, userInput):
+def spawn(code, userInput, group):
     global result
     global output
     global error
 
-    f = open('code.py', 'w')
+
+    f = open('userCode/' + str(group) + '.py', 'w+')
     f.write(code)
     f.close()
 
-    f = open('input.txt', 'w')
+    f = open('userCode/' + str(group) + 'input.txt', 'w+')
     f.write(userInput)
     f.close()
 
-    result = Popen("python code.py < input.txt", stdout=PIPE,
+    result = Popen('python userCode/' + str(group) +
+                '.py < userCode/' + str(group) + 'input.txt', stdout=PIPE,
                 stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
     output, error = result.communicate()
+
+    postgres_code = str(code).replace("'", "''") # to escape ' in postgres, use ''
+    postgres_out = str(output).replace("'", "''")
+    postgres_error = str(error).replace("'", "''")
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO Compilations VALUES(
+            DEFAULT, """ + str(group) + """,' """
+             + str(postgres_code) + """', ' + """ + str(postgres_out)
+             + """', '""" + str(postgres_error)+ """', now()
+        )
+    """)
+    conn.commit()
 
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
@@ -95,14 +110,10 @@ def runcode():
         STORE  = json.loads(request.data)
         STORE = STORE["code"]
         code = STORE["code"]
+        group = STORE["group"]
         userInput = STORE["input"]
 
-        # if (code.find("import") != -1):
-        #     noImports = 1
-        # Start up the process in a new thread
-        # else:
-            # code = "from light import *\n" + code
-        t = Thread(target=spawn, args=(code, userInput))
+        t = Thread(target=spawn, args=(code, userInput, group))
         t.start()
 
         return "RUNNING"
@@ -170,6 +181,7 @@ def login():
 def upload():
     STORE = json.loads(request.data)
     code = STORE['code1']
+    code = code.replace("'", "''") # to escape ' in postgres, use ''
     group_id = STORE['group_id']
 
     cur = conn.cursor()
@@ -180,9 +192,8 @@ def upload():
         )
     """)
     conn.commit()
-
     return ""
 
 if __name__ == '__main__':
     # print('hi')
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -47,8 +47,8 @@ class textEditor extends Component {
     this.setState({running: true})
     const code = {
         code: returnCode(),
-        input: userInput(returnCode())
-
+        input: userInput(returnCode()),
+        group: this.props.group.data
     }
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
