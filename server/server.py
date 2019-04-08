@@ -11,16 +11,22 @@ import time
 from signal import signal, SIGPIPE, SIG_DFL, SIGTERM
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
+import psycopg2
 signal(SIGPIPE, SIG_DFL)
 result = None
 output = None
 error = None
-# noImports = None
 # ====================================================================
 
 
 app = Flask(__name__)
 CORS(app)
+
+DBHOSTNAME = os.environ['DBHOSTNAME']
+USER = os.environ['USER']
+DATABASE = os.environ['DATABASE']
+PASSWORD = os.environ['PASSWORD']
+conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
 
 # This is for killing a process that we have spawned
 @app.route("/kill")
@@ -44,15 +50,15 @@ def spawn(code, userInput):
     global output
     global error
 
-    f = open('userCode/code.py', 'w')
+    f = open('code.py', 'w')
     f.write(code)
     f.close()
 
-    f = open('userCode/input.txt', 'w')
+    f = open('input.txt', 'w')
     f.write(userInput)
     f.close()
 
-    result = Popen("python userCode/code.py < userCode/input.txt", stdout=PIPE,
+    result = Popen("python code.py < input.txt", stdout=PIPE,
                 stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
     output, error = result.communicate()
 
@@ -120,4 +126,4 @@ def getOutput():
 
 
 if __name__ == '__main__':
-        app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
