@@ -15,7 +15,7 @@ CREATE TABLE Code_Iterations (
 );
 
 CREATE TABLE Compilations (
-  id SERIAL
+  id SERIAL,
   group_id INT,
   output TEXT,
   time TIMESTAMP

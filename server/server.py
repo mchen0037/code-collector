@@ -26,7 +26,24 @@ DBHOSTNAME = os.environ['DBHOSTNAME']
 USER = os.environ['USER']
 DATABASE = os.environ['DATABASE']
 PASSWORD = os.environ['PASSWORD']
+
+# for local DB
+DBHOSTNAME = 'localhost'
+USER = 'postgres'
+DATABASE = 'testdb'
+PASSWORD = os.environ['ramen']
+
+# poo = (str(['george', 'watsky']))
+# print(type(poo))
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
+# cur = conn.cursor()
+# cur.execute("""
+#     INSERT INTO Groups VALUES (
+#         DEFAULT, ARRAY """ + poo + """
+#     )
+# """)
+# conn.commit()
+# print(result)
 
 # This is for killing a process that we have spawned
 @app.route("/kill")
@@ -128,8 +145,16 @@ def login():
     STORE  = json.loads(request.data)
     student_1 = STORE["st_1"]
     student_2 = STORE["st_2"]
-    
-    return "hi"
+    students = str([student_1, student_2])
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO Groups VALUES (
+            DEFAULT, ARRAY """ + students + """
+        )
+    """)
+    conn.commit()
+
+    return "Success!"
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
