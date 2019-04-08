@@ -154,7 +154,35 @@ def login():
     """)
     conn.commit()
 
-    return "Success!"
+    cur.execute("""
+        SELECT id
+        FROM Groups
+        WHERE students[1] = '""" + student_1 + """'
+        AND students[2] = '""" + student_2 + """'
+    """)
+    result = cur.fetchone()
+    print(result[0])
+
+    # return the id of the group
+    return str(result[0])
+
+@app.route("/upload", methods=['POST'])
+def upload():
+    STORE = json.loads(request.data)
+    code = STORE['code1']
+    group_id = STORE['group_id']
+
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO Code_Iterations VALUES (
+            DEFAULT, """ + str(group_id) + """
+            ,' + """ + str(code) + """', now()
+        )
+    """)
+    conn.commit()
+
+    return ""
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # print('hi')
+    app.run(host="0.0.0.0", port=5000, debug=False)

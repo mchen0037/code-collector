@@ -24,8 +24,7 @@ class App extends Component {
 
   state = {
     data: [],
-    student_1: "",
-    student_2: ""
+    group_id: null
   }
 
   handleGetData = (arr) => {
@@ -33,18 +32,20 @@ class App extends Component {
   }
 
   handleLogin(st_1, st_2) {
-    this.setState({student_1: st_1, student_2: st_2})
     axios.post(_SERVER + "/login", {st_1, st_2})
+      .then(res => {
+        this.setState({group_id: res})
+      })
   }
 
   render() {
     return (
       <div>
-        {this.state.student_1 ?
+        {this.state.group_id ?
           <React.Fragment>
             <Grid columns= "equal" padded>
               <Grid.Column width = {8}>
-                <TextEditor setData={this.handleGetData}/>
+                <TextEditor setData={this.handleGetData} group={this.state.group_id}/>
               </Grid.Column>
               <Grid.Column width = {8}>
                 <Problem data={this.state.data}/>

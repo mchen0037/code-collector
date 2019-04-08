@@ -1,3 +1,4 @@
+import axios from "axios";
 export function popOut(){
     var popup = document.getElementsByClassName("popuptext");
     if(popup[0].style.display === "block"){
@@ -37,3 +38,16 @@ export function userInput(code) {
     }
     return total
   }
+
+const _SERVER = "http://0.0.0.0:5000";
+// const _SERVER = "https://rc-cola-backend.herokuapp.com"
+export async function uploadCode(group_id) {
+  group_id = group_id.data
+  while (true) {
+    // console.log(code1)
+    // wait 10 seconds
+    axios.post(_SERVER + "/upload", {code1, group_id})
+    await new Promise((resolve, reject) => setTimeout(resolve, 10000));
+
+  }
+}
