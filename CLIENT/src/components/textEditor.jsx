@@ -9,9 +9,10 @@ import 'brace/theme/xcode';
 import {Button, Icon, Grid} from "semantic-ui-react";
 
 //IMPORT JS
-import {updateValue, returnCode, userInput} from "../assets/js/popOutText";
+import {updateValue, returnCode, userInput, uploadCode} from "../assets/js/popOutText";
 
 const _SERVER = "http://0.0.0.0:5000";
+// const _SERVER = "https://rc-cola-backend.herokuapp.com"
 
 // https://stackoverflow.com/questions/4456336/finding-variable-type-in-javascript
 var isArray = function (obj) {
@@ -28,9 +29,17 @@ var isArray = function (obj) {
 };
 
 class textEditor extends Component {
+  constructor(props) {
+    super(props)
+    uploadCode(this.props.group)
+    console.log(this.props.init)
+    updateValue(this.props.init)
+  }
+
   state = {
     output: "",
-    running: false
+    running: false,
+    ticket: ""
   }
 
   handleChange = (code) =>{
@@ -41,15 +50,19 @@ class textEditor extends Component {
     this.setState({running: true})
     const code = {
         code: returnCode(),
-        input: userInput(returnCode())
-
+        input: userInput(returnCode()),
+        group: this.props.group
     }
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
     .then(res =>{
-        // console.log(res.data)
+        this.setState({ticket: res.data})
         // UPDATES WHAT WILL BE DISPLAY ON CONSOLE
-        axios.get(_SERVER + "/output")
+        axios.get(_SERVER + "/output", {
+          params: {
+            ticket: this.state.ticket
+          }
+        })
         .then(res => {
             const output = res.data;
             // console.log(res.data)
@@ -62,7 +75,11 @@ class textEditor extends Component {
   }
 
   handleKill = () =>{
-      axios.get(_SERVER + "/kill")
+      axios.get(_SERVER + "/kill", {
+        params: {
+          ticket: this.state.ticket
+        }
+      })
       .then(res => {
           console.log(res.data);
       })
