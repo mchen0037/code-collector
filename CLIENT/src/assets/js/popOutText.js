@@ -42,7 +42,7 @@ export function userInput(code) {
 const _SERVER = "http://0.0.0.0:5000";
 // const _SERVER = "https://rc-cola-backend.herokuapp.com"
 export async function uploadCode(group_id) {
-  group_id = group_id.data
+  group_id = group_id
   while (true) {
     // console.log(code1)
     // wait 10 seconds

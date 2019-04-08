@@ -24,28 +24,34 @@ class App extends Component {
 
   state = {
     data: [],
-    group_id: null
+    group_id: null,
+    init: ""
   }
 
   handleGetData = (arr) => {
     this.setState({data: arr})
   }
 
-  handleLogin(st_1, st_2) {
-    axios.post(_SERVER + "/login", {st_1, st_2})
+  async handleLogin(st_1, st_2) {
+    await axios.post(_SERVER + "/login", {st_1, st_2})
       .then(res => {
-        this.setState({group_id: res})
+        console.log(res)
+        this.setState({group_id: res.data.group_id, init: res.data.code})
       })
   }
 
   render() {
+    console.log(this.state)
     return (
       <div>
         {this.state.group_id ?
           <React.Fragment>
             <Grid columns= "equal" padded>
               <Grid.Column width = {8}>
-                <TextEditor setData={this.handleGetData} group={this.state.group_id}/>
+                <TextEditor setData={this.handleGetData}
+                   group={this.state.group_id}
+                   init={this.state.init}
+                 />
               </Grid.Column>
               <Grid.Column width = {8}>
                 <Problem data={this.state.data}/>

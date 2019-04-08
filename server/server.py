@@ -1,6 +1,7 @@
 
 from flask import Flask
 from flask import request
+from flask import jsonify
 import json
 # from light.py import Light
 from flask_cors import CORS
@@ -20,7 +21,6 @@ output = {}
 error = {}
 # ====================================================================
 
-
 app = Flask(__name__)
 CORS(app)
 
@@ -35,17 +35,7 @@ USER = 'postgres'
 DATABASE = 'testdb'
 PASSWORD = os.environ['ramen']
 
-# poo = (str(['george', 'watsky']))
-# print(type(poo))
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
-# cur = conn.cursor()
-# cur.execute("""
-#     INSERT INTO Groups VALUES (
-#         DEFAULT, ARRAY """ + poo + """
-#     )
-# """)
-# conn.commit()
-# print(result)
 
 # This is for killing a process that we have spawned
 @app.route("/kill")
@@ -99,7 +89,6 @@ def spawn(code, userInput, group, ticket):
 @app.route("/run", methods=['POST'])
 def runcode():
     if(request.method == "POST"):
-
         STORE  = json.loads(request.data)
         STORE = STORE["code"]
         code = STORE["code"]
@@ -167,12 +156,6 @@ def login():
     student_2 = STORE["st_2"]
     students = str([student_1, student_2])
     cur = conn.cursor()
-    cur.execute("""
-        INSERT INTO Groups VALUES (
-            DEFAULT, ARRAY """ + students + """
-        )
-    """)
-    conn.commit()
 
     cur.execute("""
         SELECT id
@@ -181,10 +164,37 @@ def login():
         AND students[2] = '""" + student_2 + """'
     """)
     res = cur.fetchone()
-    print(res[0])
+    code = " "
+    # if pair doesn't exist, create a new pair
+    if not res:
+        cur.execute("""
+            INSERT INTO Groups VALUES (
+                DEFAULT, ARRAY """ + students + """
+            )
+        """)
+        conn.commit()
+        cur.execute("""
+            SELECT id
+            FROM Groups
+            WHERE students[1] = '""" + student_1 + """'
+            AND students[2] = '""" + student_2 + """'
+        """)
+        res = cur.fetchone()
+        group_id = res[0]
+        return jsonify({"code": code, "group_id": group_id})
+    else: # give them their code back
+        group_id = res[0]
+        cur.execute("""
+            SELECT code FROM Code_Iterations
+            WHERE group_id = """ + str(group_id) + """
+            ORDER BY time DESC
+            LIMIT 1
+        """)
+        res = cur.fetchone()
+        code = res[0]
+        return jsonify({"code": code, "group_id": group_id})
 
-    # return the id of the group
-    return str(res[0])
+    return ""
 
 @app.route("/upload", methods=['POST'])
 def upload():

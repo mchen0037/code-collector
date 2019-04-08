@@ -32,6 +32,8 @@ class textEditor extends Component {
   constructor(props) {
     super(props)
     uploadCode(this.props.group)
+    console.log(this.props.init)
+    updateValue(this.props.init)
   }
 
   state = {
@@ -49,7 +51,7 @@ class textEditor extends Component {
     const code = {
         code: returnCode(),
         input: userInput(returnCode()),
-        group: this.props.group.data
+        group: this.props.group
     }
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
