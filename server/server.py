@@ -16,9 +16,6 @@ import psycopg2
 import string
 import random
 signal(SIGPIPE, SIG_DFL)
-processes = {}
-output = {}
-error = {}
 # ====================================================================
 
 app = Flask(__name__)
@@ -29,10 +26,10 @@ USER = os.environ['USER']
 DATABASE = os.environ['DATABASE']
 PASSWORD = os.environ['PASSWORD']
 
-# # for local DB
+# for local DB
 # DBHOSTNAME = 'localhost'
 # USER = 'postgres'
-# DATABASE = 'testdb'
+# DATABASE = 'rc-cola-local'
 # PASSWORD = os.environ['ramen']
 
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
@@ -40,34 +37,20 @@ conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=
 # This is for killing a process that we have spawned
 @app.route("/kill")
 def kill():
-    # global processes
-    # global output
-    # global error
-    # ticket = request.args.get('ticket')
-
-    # program = processes[ticket]
-
-    print("Starting kill")
-    if program != None:
-        print("Killing")
-        try:
-            os.killpg(os.getpgid(process.pid), SIGTERM)
-            return "Process was killed."
-        except:
-            return 'Nothing to kill!'
-    else:
-        return "Nothing to kill!"
-
-# # generate a random receipt like ticket for the output to query for this
-# # in the database, rather than relying on global variables.
-# def ticketGen(size=20, chars=string.ascii_uppercase + string.digits):
-#     return ''.join(random.choice(chars) for _ in range(size))
+    # print("Starting kill")
+    # if program != None:
+    #     print("Killing")
+    #     try:
+    #         os.killpg(os.getpgid(process.pid), SIGTERM)
+    #         return "Process was killed."
+    #     except:
+    #         return 'Nothing to kill!'
+    # else:
+    #     return "Nothing to kill!"
+    return "Broken.."
 
 # This is to spawn a process
 def spawn(code, userInput, group):
-    global processes
-    # global output
-    # global error
     f = open('userCode/' + str(group) + '.py', 'w+')
     f.write(code)
     f.close()
@@ -76,15 +59,17 @@ def spawn(code, userInput, group):
     f.write(userInput)
     f.close()
 
+    begin = time.time()
+
     tmp = Popen('python userCode/' + str(group) +
                 '.py < userCode/' + str(group) + 'input.txt', stdout=PIPE,
                 stdin=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
-    # processes[ticket] = tmp
-    # print(ticket, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<ticket inserted..')
-    # print(processes)
-    # output[ticket], error[ticket] = tmp.communicate()
+
+    while (True and tmp.poll() == None):
+        if (time.time() - begin > 5):
+            tmp.kill()
+            return (("", "Program took too long! Possible Infinite Loop?"))
     return tmp.communicate()
-    # print("spawn finished.")
 
 # The endpoint for uploading the code and running it
 @app.route("/run", methods=['POST'])
@@ -98,60 +83,22 @@ def runcode():
         userInput = STORE["input"]
 
         cur = conn.cursor()
-        # probability is low but ensure that no other copilations have the same ticket value
-        # ticket = ""
-        # while (True):
-        #     ticket = ticketGen()
-        #     if ticket not in processes.keys(): #check for empty list
-        #         break
-        #     print("Ticket already exists! Generating a new one...")
-
         output, error = spawn(code, userInput, group)
-        # print(processes)
-        # print(output)
-        # t = Thread(target=spawn, args=(code, userInput, group, ticket))
-        # t.start()
-        return output + error
 
-# @app.route("/output")
-# def getOutput():
-#     # global processes
-#     print(processes)
-#     print(output)
-#     # global output
-#     # global error
-#
-#     ticket = request.args.get('ticket')
-#     print(processes.keys())
-#     program = processes[ticket]
-#
-#     # Make sure the process has started
-#     # Wait for it if it has not
-#     while program == None:
-#         time.sleep(0.1)
-#     # We will wait 5 seconds, checking at 0.1 second intervals
-#     for i in range(1200):
-#         # The process has terminated, there should be output and/or an error
-#         if program.poll() != None:
-#             if ticket in processes:
-#                 out = output[ticket]
-#                 err = error[ticket]
-#                 del processes[ticket]
-#                 del output[ticket]
-#                 del error[ticket]
-#             return out + err
-#         time.sleep(0.1)
-#
-#     # We have waited 5 seconds now, check if the process is still alive
-#     proc = program.poll()
-#
-#     # If proc is None, it means it is still alive
-#     # If the process has completed, proc will have some integer value, like 0
-#     if program == None:
-#         kill(program)
-#         return "Taking too long..."
-#
-#     return "This line should never be executed..."
+        ps_code = str(code).replace("'", "''")
+        ps_output = str(output).replace("'", "''")
+        ps_error = str(error).replace("'", "''")
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO Compilations VALUES(
+                DEFAULT, """ + str(group) + """,' """
+                 + str(ps_code) + """', ' + """ + str(ps_output)
+                 + """', '""" + str(ps_error)+ """', now()
+            )
+        """)
+        conn.commit()
+
+        return output + error
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -167,7 +114,6 @@ def login():
         AND students[2] = '""" + student_2 + """'
     """)
     res = cur.fetchone()
-    code = " "
     # if pair doesn't exist, create a new pair
     if not res:
         cur.execute("""
@@ -184,7 +130,7 @@ def login():
         """)
         res = cur.fetchone()
         group_id = res[0]
-        return jsonify({"code": code, "group_id": group_id})
+        return jsonify({"code": "", "group_id": group_id})
     else: # give them their code back
         group_id = res[0]
         cur.execute("""

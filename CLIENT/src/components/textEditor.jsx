@@ -57,6 +57,9 @@ class textEditor extends Component {
     axios.post(_SERVER + "/run", {code})
     .then(res =>{
         this.setState({output: res.data, running: false})
+        if (isArray(res.data)) {
+          this.props.setData(res.data)
+        }
         // this.setState({ticket: res.data})
         // UPDATES WHAT WILL BE DISPLAY ON CONSOLE
         // axios.get(_SERVER + "/output", {
