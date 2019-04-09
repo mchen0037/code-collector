@@ -2,10 +2,15 @@ import os
 import psycopg2
 import re
 
-DBHOSTNAME = 'localhost'
-USER = 'postgres'
-DATABASE = 'testdb'
-PASSWORD = os.environ['ramen']
+# DBHOSTNAME = 'localhost'
+# USER = 'postgres'
+# DATABASE = 'testdb'
+# PASSWORD = os.environ['ramen']
+DBHOSTNAME = os.environ['DBHOSTNAME']
+USER = os.environ['USER']
+DATABASE = os.environ['DATABASE']
+PASSWORD = os.environ['PASSWORD']
+
 
 code = "print('hello')"
 code.replace("'", "\\\'")
@@ -14,11 +19,14 @@ code.replace("'", "\\\'")
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
 cur = conn.cursor()
 cur.execute("""
-    INSERT INTO Code_Iterations VALUES (
-        DEFAULT, 1, '""" + code + """', now()
-    )
+    SELECT code FROM Code_Iterations
+    WHERE group_id=17
 """)
-conn.commit()
+res = cur.fetchall()
+for x in res:
+    print(x[0])
+    input()
+# conn.commit()
 # cur.execute("""
 #     SELECT code
 #     FROM Code_Iterations

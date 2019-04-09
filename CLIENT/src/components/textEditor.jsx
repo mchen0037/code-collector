@@ -56,21 +56,22 @@ class textEditor extends Component {
     // console.log(code.input);
     axios.post(_SERVER + "/run", {code})
     .then(res =>{
-        this.setState({ticket: res.data})
+        this.setState({output: res.data, running: false})
+        // this.setState({ticket: res.data})
         // UPDATES WHAT WILL BE DISPLAY ON CONSOLE
-        axios.get(_SERVER + "/output", {
-          params: {
-            ticket: this.state.ticket
-          }
-        })
-        .then(res => {
-            const output = res.data;
-            // console.log(res.data)
-            if (isArray(res.data)) {
-              this.props.setData(res.data)
-            }
-            this.setState({output: output, running: false});
-        })
+        // axios.get(_SERVER + "/output", {
+        //   params: {
+        //     ticket: this.state.ticket
+        //   }
+        // })
+        // .then(res => {
+        //     const output = res.data;
+        //     // console.log(res.data)
+        //     if (isArray(res.data)) {
+        //       this.props.setData(res.data)
+        //     }
+        //     this.setState({output: output, running: false});
+        // })
       })
   }
 
