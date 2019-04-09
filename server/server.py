@@ -13,8 +13,8 @@ from signal import signal, SIGPIPE, SIG_DFL, SIGTERM
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 import psycopg2
-import string
 import random
+import re
 signal(SIGPIPE, SIG_DFL)
 # ====================================================================
 
@@ -82,6 +82,8 @@ def runcode():
         group = STORE["group"]
         userInput = STORE["input"]
 
+        code = re.sub(r'import os', '', code)
+        print(code)
         cur = conn.cursor()
         output, error = spawn(code, userInput, group)
 
