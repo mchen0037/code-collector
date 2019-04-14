@@ -12,6 +12,15 @@
     border-color: black;
 }
 
+.problem{
+  width: 100% !important;
+}
+
+.plot{
+  width: 100% !important;
+
+}
+
 .editor{
     width: 100% !important;
     height: 550px !important;
