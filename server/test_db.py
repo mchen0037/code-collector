@@ -19,8 +19,7 @@ code.replace("'", "\\\'")
 conn = psycopg2.connect(host=DBHOSTNAME, database=DATABASE, user=USER, password=PASSWORD)
 cur = conn.cursor()
 cur.execute("""
-    SELECT code FROM Code_Iterations
-    WHERE group_id=17
+    SELECT * FROM Groups
 """)
 res = cur.fetchall()
 for x in res:

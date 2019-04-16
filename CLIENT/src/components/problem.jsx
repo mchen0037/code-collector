@@ -27,7 +27,7 @@ class Problem extends Component {
             can do the exact same thing: Buy a soda, check the number.. 3? Buy a
             soda, check the cap to see if it's a 1-- 6? Buy a soda, check the
             cap to see if it's a 1--yes! Out of excitement, people scream
-            <b>how many bottles they bought in total</b>.
+            <b> how many bottles they bought in total</b>.
           </p>
           <p>
             Researcher Helen Zhao Chen is curious to see which number was

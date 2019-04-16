@@ -83,6 +83,10 @@ def runcode():
         userInput = STORE["input"]
 
         code = re.sub(r'import os', '', code)
+        code = re.sub(r'import subprocess', '', code)
+        code = re.sub(r'import shlex', '', code)
+        code = re.sub(r'import commands', '', code)
+        code = re.sub(r'import sh', '', code)
         print(code)
         cur = conn.cursor()
         output, error = spawn(code, userInput, group)
@@ -94,7 +98,7 @@ def runcode():
         cur.execute("""
             INSERT INTO Compilations VALUES(
                 DEFAULT, """ + str(group) + """,' """
-                 + str(ps_code) + """', ' + """ + str(ps_output)
+                 + str(ps_code) + """', '""" + str(ps_output)
                  + """', '""" + str(ps_error)+ """', now()
             )
         """)
