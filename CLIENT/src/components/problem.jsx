@@ -26,7 +26,7 @@ class Problem extends Component {
             want this prize. Every one is waiting in this line so that they
             can do the exact same thing: Buy a soda, check the number.. 3? Buy a
             soda, check the cap to see if it's a 1-- 6? Buy a soda, check the
-            cap to see if it's a 1--yes! Out of excitement, people scream how
+            cap to see if it's a 1--yes! Out of excitement, people scream
             <b>how many bottles they bought in total</b>.
           </p>
           <p>
